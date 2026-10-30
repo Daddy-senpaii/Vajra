@@ -35,7 +35,7 @@ async function syncRules(): Promise<void> {
   const dynamicRules = generateDynamicRules(
     settings.customBlocklist,
     settings.customAllowlist,
-    chrome.runtime.getURL('src/blocked-page/blocked.html')
+    chrome.runtime.getURL('blocked.html')
   );
 
   const existingRules = await chrome.declarativeNetRequest.getDynamicRules();

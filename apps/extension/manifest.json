@@ -5,7 +5,6 @@
   "description": "Protects your digital wellbeing by blocking adult content and maintaining commitments.",
   "permissions": [
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
     "storage",
     "tabs"
   ],
@@ -22,7 +21,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_popup": "src/popup/popup.html",
+    "default_popup": "popup.html",
     "default_title": "Vajra Protection",
     "default_icon": {
       "16": "icons/icon16.png",
@@ -42,8 +41,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "src/blocked-page/blocked.html",
         "blocked.html",
+        "popup.html",
         "assets/*"
       ],
       "matches": [

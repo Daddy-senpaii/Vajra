@@ -5,7 +5,7 @@
     "action": {
       "type": "redirect",
       "redirect": {
-        "extensionPath": "/src/blocked-page/blocked.html?domain=adult-example.com"
+        "extensionPath": "/blocked.html?domain=adult-example.com"
       }
     },
     "condition": {
@@ -19,7 +19,7 @@
     "action": {
       "type": "redirect",
       "redirect": {
-        "extensionPath": "/src/blocked-page/blocked.html?domain=bad-content-hub.net"
+        "extensionPath": "/blocked.html?domain=bad-content-hub.net"
       }
     },
     "condition": {
@@ -33,7 +33,7 @@
     "action": {
       "type": "redirect",
       "redirect": {
-        "extensionPath": "/src/blocked-page/blocked.html?domain=xxx-sample.org"
+        "extensionPath": "/blocked.html?domain=xxx-sample.org"
       }
     },
     "condition": {
@@ -47,7 +47,7 @@
     "action": {
       "type": "redirect",
       "redirect": {
-        "extensionPath": "/src/blocked-page/blocked.html?domain=illicit-media.test"
+        "extensionPath": "/blocked.html?domain=illicit-media.test"
       }
     },
     "condition": {
@@ -61,7 +61,7 @@
     "action": {
       "type": "redirect",
       "redirect": {
-        "extensionPath": "/src/blocked-page/blocked.html?domain=nsfw-stream.tv"
+        "extensionPath": "/blocked.html?domain=nsfw-stream.tv"
       }
     },
     "condition": {
@@ -75,7 +75,7 @@
     "action": {
       "type": "redirect",
       "redirect": {
-        "extensionPath": "/src/blocked-page/blocked.html?domain=explicit-pictures.cc"
+        "extensionPath": "/blocked.html?domain=explicit-pictures.cc"
       }
     },
     "condition": {
