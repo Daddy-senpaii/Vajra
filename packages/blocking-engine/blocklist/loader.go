@@ -14,7 +14,7 @@ import (
 // Invalid entries are safely skipped. Returns the count of newly added domains.
 func LoadFromReader(r io.Reader, b *Blocklist) (int, error) {
 	scanner := bufio.NewScanner(r)
-	initialSize := b.Size()
+	added := 0
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
@@ -35,14 +35,16 @@ func LoadFromReader(r io.Reader, b *Blocklist) (int, error) {
 			continue
 		}
 
-		_ = b.Add(norm)
+		if b.addNormalized(norm) {
+			added++
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return b.Size() - initialSize, err
+		return added, err
 	}
 
-	return b.Size() - initialSize, nil
+	return added, nil
 }
 
 // LoadFromFile opens the specified local file and populates the given Blocklist.

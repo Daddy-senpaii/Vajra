@@ -133,6 +133,21 @@ duplicate.com
 	}
 }
 
+func TestBlocklist_LoaderCountsOnlyNewEntries(t *testing.T) {
+	bl := blocklist.New()
+	if err := bl.Add("existing.com"); err != nil {
+		t.Fatal(err)
+	}
+
+	added, err := blocklist.LoadFromReader(strings.NewReader("existing.com\nnew.com\nnew.com\n"), bl)
+	if err != nil {
+		t.Fatalf("LoadFromReader failed: %v", err)
+	}
+	if added != 1 {
+		t.Fatalf("LoadFromReader added %d domains, want 1", added)
+	}
+}
+
 func TestBlocklist_Concurrency(t *testing.T) {
 	bl := blocklist.New()
 	var wg sync.WaitGroup

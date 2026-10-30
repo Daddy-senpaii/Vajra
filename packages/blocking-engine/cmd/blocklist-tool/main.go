@@ -64,6 +64,10 @@ func main() {
 		res := eng.Evaluate(line)
 		printResult(line, res)
 	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 func printResult(input string, res engine.Result) {

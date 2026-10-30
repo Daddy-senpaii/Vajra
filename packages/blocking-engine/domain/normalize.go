@@ -23,10 +23,10 @@ func Normalize(raw string) (string, error) {
 		return "", ErrEmptyDomain
 	}
 
-	// If a scheme is present (e.g. "http://", "https://"), parse as URL to extract host.
+	// If a scheme is present (e.g. "http://", "https://"), parse as URL to extract authority.
 	if strings.Contains(s, "://") {
 		u, err := url.Parse(s)
-		if err != nil {
+		if err != nil || u.Host == "" {
 			return "", ErrInvalidDomain
 		}
 		s = u.Host
@@ -36,18 +36,12 @@ func Normalize(raw string) (string, error) {
 		s = parts[0]
 	}
 
-	// Strip port if present (e.g. "example.com:8080" or "[::1]:8080")
-	if strings.HasPrefix(s, "[") {
-		// IPv6 literal - strip closing bracket and port
-		closeBracket := strings.Index(s, "]")
-		if closeBracket != -1 {
-			s = s[1:closeBracket]
-		}
-	} else if colonIdx := strings.LastIndex(s, ":"); colonIdx != -1 {
-		// Only strip port if there is only one colon (not IPv6 without brackets)
-		if strings.Count(s, ":") == 1 {
-			s = s[:colonIdx]
-		}
+	// Strip a valid numeric port, but reject malformed authorities instead of
+	// silently turning inputs such as "example.com:abc" into valid domains.
+	var err error
+	s, err = stripPort(s)
+	if err != nil {
+		return "", ErrInvalidDomain
 	}
 
 	// Strip trailing FQDN dot (e.g. "example.com." -> "example.com")
@@ -73,4 +67,51 @@ func Normalize(raw string) (string, error) {
 	}
 
 	return asciiDomain, nil
+}
+
+func stripPort(authority string) (string, error) {
+	if strings.HasPrefix(authority, "[") {
+		end := strings.IndexByte(authority, ']')
+		if end < 0 {
+			return "", ErrInvalidDomain
+		}
+		host, suffix := authority[1:end], authority[end+1:]
+		if suffix != "" {
+			if !strings.HasPrefix(suffix, ":") || validatePort(suffix[1:]) != nil {
+				return "", ErrInvalidDomain
+			}
+		}
+		return host, nil
+	}
+
+	if strings.Count(authority, ":") > 1 {
+		return "", ErrInvalidDomain
+	}
+	if i := strings.LastIndexByte(authority, ':'); i >= 0 {
+		if err := validatePort(authority[i+1:]); err != nil {
+			return "", err
+		}
+		return authority[:i], nil
+	}
+	return authority, nil
+}
+
+func validatePort(port string) error {
+	if port == "" {
+		return ErrInvalidDomain
+	}
+	value := 0
+	for _, digit := range port {
+		if digit < '0' || digit > '9' {
+			return ErrInvalidDomain
+		}
+		value = value*10 + int(digit-'0')
+		if value > 65535 {
+			return ErrInvalidDomain
+		}
+	}
+	if value == 0 {
+		return ErrInvalidDomain
+	}
+	return nil
 }

@@ -28,10 +28,19 @@ func (b *Blocklist) Add(rawDomain string) error {
 		return err
 	}
 
+	b.addNormalized(norm)
+	return nil
+}
+
+// addNormalized inserts a normalized domain and reports whether it was new.
+func (b *Blocklist) addNormalized(normalizedDomain string) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	b.domains[norm] = struct{}{}
-	return nil
+	if _, exists := b.domains[normalizedDomain]; exists {
+		return false
+	}
+	b.domains[normalizedDomain] = struct{}{}
+	return true
 }
 
 // Remove normalizes and removes a domain from the blocklist.

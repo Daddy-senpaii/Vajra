@@ -49,6 +49,11 @@ func TestNormalize_Valid(t *testing.T) {
 			expected: "example.com",
 		},
 		{
+			name:     "domain with valid port",
+			input:    "example.com:443",
+			expected: "example.com",
+		},
+		{
 			name:     "url without scheme but with path",
 			input:    "example.com/page",
 			expected: "example.com",
@@ -106,6 +111,12 @@ func TestNormalize_Invalid(t *testing.T) {
 		{"domain exceeds 253 chars", longDomain},
 		{"numeric TLD", "example.123"},
 		{"single char TLD", "example.c"},
+		{"nonnumeric port", "example.com:abc"},
+		{"signed port", "example.com:+80"},
+		{"empty port", "example.com:"},
+		{"port out of range", "example.com:65536"},
+		{"URL with nonnumeric port", "https://example.com:abc/path"},
+		{"URL without host", "https:///path"},
 	}
 
 	for _, tt := range invalidInputs {
