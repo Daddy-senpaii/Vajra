@@ -19,3 +19,7 @@ dist/
 .vscode/
 *.swp
 *~
+
+# Agent instructions
+AGENT.md
+AGENTS.md

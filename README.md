@@ -6,8 +6,6 @@ Vajra is a cross-platform adult-content blocking application focused on helping 
 
 - **Phase 1: Core Blocking Engine** (implemented; sample data only)
 
-See [AGENT.md](AGENT.md) for architecture, guidelines, and roadmap.
-
 ## Core engine
 
 The standalone Go engine lives in `packages/blocking-engine`. It normalizes and
