@@ -127,6 +127,25 @@ func TestEngine_EmptyBlocklist(t *testing.T) {
 	}
 }
 
+func TestEngine_DefaultBlocklist(t *testing.T) {
+	eng, err := engine.NewDefault()
+	if err != nil {
+		t.Fatalf("NewDefault failed: %v", err)
+	}
+	if eng.Blocklist().Size() < 400000 {
+		t.Fatalf("bundled blocklist unexpectedly small: %d domains", eng.Blocklist().Size())
+	}
+
+	for _, domain := range []string{"pornhub.com", "www.xvideos.com", "xnxx.com", "xhamster.com"} {
+		if got := eng.Evaluate(domain).Decision; got != engine.DecisionBlock {
+			t.Errorf("Evaluate(%q) = %s, want BLOCK", domain, got)
+		}
+	}
+	if got := eng.Evaluate("example.com").Decision; got != engine.DecisionAllow {
+		t.Errorf("Evaluate(example.com) = %s, want ALLOW", got)
+	}
+}
+
 func TestEngine_DynamicUpdates(t *testing.T) {
 	eng := engine.New(nil, nil)
 

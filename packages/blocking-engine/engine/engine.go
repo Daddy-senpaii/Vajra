@@ -53,6 +53,16 @@ func New(al *allowlist.Allowlist, bl *blocklist.Blocklist) *Engine {
 	}
 }
 
+// NewDefault creates an Engine preloaded with the bundled offline adult-domain
+// blocklist. It returns an error if the embedded list cannot be loaded.
+func NewDefault() (*Engine, error) {
+	bl, _, err := blocklist.NewDefault()
+	if err != nil {
+		return nil, err
+	}
+	return New(nil, bl), nil
+}
+
 // Evaluate processes an input domain according to the specified decision pipeline:
 // 1. Normalize and validate the domain input.
 // 2. Check allowlist (takes precedence).

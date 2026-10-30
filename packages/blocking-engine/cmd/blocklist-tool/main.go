@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	blocklistPath := flag.String("blocklist", "", "Path to blocklist file")
+	blocklistPath := flag.String("blocklist", "", "Path to a local blocklist file (defaults to bundled adult-domain data)")
 	allowlistPath := flag.String("allowlist", "", "Path to allowlist file")
 	domainArg := flag.String("domain", "", "Single domain to test")
 	flag.Parse()
@@ -28,6 +28,15 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("Loaded %d domains into blocklist from %s\n", count, *blocklistPath)
+	} else {
+		var count int
+		var err error
+		bl, count, err = blocklist.NewDefault()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading bundled blocklist: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Loaded %d domains from bundled adult blocklist\n", count)
 	}
 
 	if *allowlistPath != "" {
