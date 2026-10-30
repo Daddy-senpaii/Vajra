@@ -1,0 +1,7 @@
+# Sample Allowlist
+# Used for testing and local development
+example.com
+wikipedia.org
+safe.adult-example.com # Subdomain override on blocked domain
+github.com
+google.com

@@ -1,0 +1,8 @@
+# Sample Adult Content Blocklist
+# Used for testing and local development
+adult-example.com
+bad-content-hub.net
+xxx-sample.org
+illicit-media.test
+nsfw-stream.tv
+explicit-pictures.cc
