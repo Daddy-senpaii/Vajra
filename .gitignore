@@ -7,6 +7,10 @@
 bin/
 dist/
 
+# Dependencies
+node_modules/
+.vite/
+
 # Test binary, built with `go test -c`
 *.test
 

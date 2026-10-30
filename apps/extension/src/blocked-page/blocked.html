@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vajra Protection - Pause & Reflect</title>
+  <link rel="stylesheet" href="./blocked.css" />
+</head>
+<body>
+  <div class="card">
+    <div class="icon-container">
+      <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    </div>
+
+    <h1>Pause & Reflect</h1>
+    <p class="subtitle">Access to this domain was blocked by your Vajra protection shield.</p>
+
+    <div class="domain-badge">
+      <span class="badge-label">Blocked Domain:</span>
+      <span id="blocked-domain" class="domain-text">Loading...</span>
+    </div>
+
+    <div class="quote-box">
+      <p id="quote">"True freedom is the mastery of oneself."</p>
+    </div>
+
+    <div class="actions">
+      <button id="close-tab-btn" class="btn btn-primary">Close Tab</button>
+      <button id="go-back-btn" class="btn btn-secondary">Go Back</button>
+      <button id="allow-domain-btn" class="btn btn-outline">Allow Domain</button>
+    </div>
+
+    <div class="footer">
+      <span>Vajra Digital Wellbeing</span> &bull; <span>Maintaining Your Commitment</span>
+    </div>
+  </div>
+
+  <script type="module" src="./blocked.ts"></script>
+</body>
+</html>

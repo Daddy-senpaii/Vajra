@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vajra Protection</title>
+  <link rel="stylesheet" href="./popup.css" />
+</head>
+<body>
+  <div class="popup-container">
+    <header>
+      <div class="logo-title">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <span class="app-name">Vajra</span>
+      </div>
+      <div id="status-badge" class="badge active">Active</div>
+    </header>
+
+    <div class="toggle-section">
+      <div class="toggle-info">
+        <span class="toggle-title">Protection Shield</span>
+        <span id="toggle-subtitle" class="toggle-subtitle">Blocking adult content</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="protection-toggle" checked />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="stats-card">
+      <div class="stat-item">
+        <span id="blocked-count" class="stat-number">0</span>
+        <span class="stat-label">Blocked Attempts</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span id="custom-rules-count" class="stat-number">0</span>
+        <span class="stat-label">Custom Rules</span>
+      </div>
+    </div>
+
+    <div class="current-site-section">
+      <div class="section-title">Current Tab</div>
+      <div class="site-box">
+        <span id="current-domain" class="current-domain-text">Detecting...</span>
+        <div class="site-actions">
+          <button id="btn-block-current" class="btn btn-sm btn-danger">Block</button>
+          <button id="btn-allow-current" class="btn btn-sm btn-success">Allow</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-domain-section">
+      <div class="section-title">Quick Add Rule</div>
+      <div class="input-group">
+        <input type="text" id="custom-domain-input" placeholder="e.g. site.com" />
+        <button id="btn-add-block" class="btn btn-sm btn-primary">Block</button>
+        <button id="btn-add-allow" class="btn btn-sm btn-secondary">Allow</button>
+      </div>
+      <div id="rule-feedback" class="feedback-msg"></div>
+    </div>
+
+    <footer>
+      <span>Commitment Protection &bull; Offline Active</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./popup.ts"></script>
+</body>
+</html>
