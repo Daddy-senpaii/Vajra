@@ -5,6 +5,7 @@ export const PRIORITY_BLOCK = 1;
 
 export const BASE_BLOCK_ID = 1000;
 export const BASE_ALLOW_ID = 50000;
+export const MAX_DYNAMIC_BLOCK_RULES = 5000;
 
 export function buildBlockRule(
   id: number,
@@ -65,8 +66,17 @@ export function generateDynamicRules(
 ): chrome.declarativeNetRequest.Rule[] {
   const rules: chrome.declarativeNetRequest.Rule[] = [];
 
+  // Chrome's dynamic-rule quota applies to the combined block and allow rules.
+  // Keep allow rules first so a large personal allowlist still takes precedence.
+  const normalizedAllows = [...new Set(allowedDomains
+    .map((domain) => normalizeDomain(domain))
+    .filter((result) => result.isValid)
+    .map((result) => result.domain))];
+  const allowEntries = normalizedAllows.slice(0, MAX_DYNAMIC_BLOCK_RULES);
+  const remainingBlockSlots = MAX_DYNAMIC_BLOCK_RULES - allowEntries.length;
+
   let blockId = BASE_BLOCK_ID;
-  for (const d of blockedDomains) {
+  for (const d of [...new Set(blockedDomains)].slice(0, remainingBlockSlots)) {
     const rule = buildBlockRule(blockId++, d, blockedPagePath);
     if (rule) {
       rules.push(rule);
@@ -74,8 +84,8 @@ export function generateDynamicRules(
   }
 
   let allowId = BASE_ALLOW_ID;
-  for (const d of allowedDomains) {
-    const rule = buildAllowRule(allowId++, d);
+  for (const domain of allowEntries) {
+    const rule = buildAllowRule(allowId++, domain);
     if (rule) {
       rules.push(rule);
     }

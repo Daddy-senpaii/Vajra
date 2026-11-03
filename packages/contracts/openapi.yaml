@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: Vajra Policy API
+  version: 1.0.0
+  description: Public client configuration and curated domain feed; no browsing-query endpoint.
+servers:
+  - url: https://api.example.invalid
+paths:
+  /healthz:
+    get:
+      summary: Process health
+      responses:
+        '200':
+          description: Service is running
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    const: ok
+  /v1/config:
+    get:
+      summary: Get DNS filtering configuration for clients
+      responses:
+        '200':
+          description: CleanBrowsing resolver settings and active blocklist version
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [api_version, blocklist_version, dns_filter]
+                properties:
+                  api_version:
+                    type: string
+                    const: v1
+                  blocklist_version:
+                    type: string
+                  dns_filter:
+                    $ref: '#/components/schemas/DNSFilterConfig'
+  /v1/blocklist:
+    get:
+      summary: Get project-curated domain additions
+      description: Returns only curated Vajra domains, not CleanBrowsing's private category corpus or the complete upstream snapshot.
+      responses:
+        '200':
+          description: Curated blocklist snapshot
+          headers:
+            ETag:
+              schema:
+                type: string
+            X-Blocklist-Version:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CuratedBlocklist'
+        '304':
+          description: Snapshot unchanged for supplied If-None-Match value
+  /v1/admin/cleanbrowsing/sync:
+    post:
+      summary: Add missing curated domains to a CleanBrowsing profile
+      description: Does not remove provider entries. Requires API key and profile configuration on the server. Never call from a client app.
+      security:
+        - adminBearer: []
+      responses:
+        '200':
+          description: Sync complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncResult'
+        '207':
+          description: Sync completed with per-domain failures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncResult'
+        '401':
+          description: Missing or invalid Vajra admin token
+        '502':
+          description: CleanBrowsing API request failed
+        '503':
+          description: CleanBrowsing API key is not configured
+components:
+  securitySchemes:
+    adminBearer:
+      type: http
+      scheme: bearer
+  schemas:
+    DNSFilterConfig:
+      type: object
+      required: [dot_hostname, doh_url, filter, provider]
+      properties:
+        dot_hostname:
+          type: string
+          description: Android Private DNS hostname; may be overridden with a CleanBrowsing custom-profile hostname.
+        doh_url:
+          type: string
+          format: uri
+          description: DNS-over-HTTPS endpoint for clients that support it.
+        filter:
+          type: string
+          const: adult
+        provider:
+          type: string
+          const: CleanBrowsing
+        profile:
+          type: string
+          description: CleanBrowsing profile targeted by the server-side curated-domain sync.
+    CuratedBlocklist:
+      type: object
+      required: [version, source, count, domains]
+      properties:
+        version:
+          type: string
+        source:
+          type: string
+          const: vajra-curated
+        count:
+          type: integer
+          minimum: 0
+        domains:
+          type: array
+          items:
+            type: string
+    SyncResult:
+      type: object
+      required: [profile, added, skipped]
+      properties:
+        profile:
+          type: string
+        added:
+          type: integer
+          minimum: 0
+        skipped:
+          type: integer
+          minimum: 0
+        failed:
+          type: array
+          items:
+            type: string

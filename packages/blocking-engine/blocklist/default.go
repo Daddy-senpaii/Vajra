@@ -8,6 +8,9 @@ import (
 //go:embed data/adult-domains.txt
 var defaultDomains string
 
+//go:embed data/curated-domains.txt
+var curatedDomains string
+
 // NewDefault creates a blocklist from the adult-domain snapshot shipped with
 // the engine. The returned count is the number of valid, unique domains.
 func NewDefault() (*Blocklist, int, error) {
@@ -16,5 +19,13 @@ func NewDefault() (*Blocklist, int, error) {
 	if err != nil {
 		return nil, count, err
 	}
-	return list, count, nil
+	curatedCount, err := LoadFromReader(strings.NewReader(curatedDomains), list)
+	return list, count + curatedCount, err
+}
+
+// NewCurated creates a blocklist containing only project-curated domains.
+func NewCurated() (*Blocklist, int, error) {
+	list := New()
+	count, err := LoadFromReader(strings.NewReader(curatedDomains), list)
+	return list, count, err
 }

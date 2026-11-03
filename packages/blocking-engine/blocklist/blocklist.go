@@ -1,6 +1,7 @@
 package blocklist
 
 import (
+	"sort"
 	"strings"
 	"sync"
 
@@ -103,6 +104,19 @@ func (b *Blocklist) Size() int {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 	return len(b.domains)
+}
+
+// Domains returns a sorted snapshot of all normalized domains in the blocklist.
+func (b *Blocklist) Domains() []string {
+	b.mu.RLock()
+	defer b.mu.RUnlock()
+
+	domains := make([]string, 0, len(b.domains))
+	for domain := range b.domains {
+		domains = append(domains, domain)
+	}
+	sort.Strings(domains)
+	return domains
 }
 
 // Clear removes all domains from the blocklist.

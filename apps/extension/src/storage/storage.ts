@@ -8,6 +8,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   blockedCount: 0,
   customBlocklist: [],
   customAllowlist: [],
+  remoteBlocklist: [],
 };
 
 export async function getSettings(): Promise<UserSettings> {

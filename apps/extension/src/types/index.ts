@@ -7,6 +7,9 @@ export interface UserSettings {
   blockedCount: number;
   customBlocklist: string[];
   customAllowlist: string[];
+  remoteBlocklist: string[];
+  remoteBlocklistVersion?: string;
+  remoteBlocklistETag?: string;
   lastBlockedUrl?: string;
   lastBlockedDomain?: string;
   lastBlockedTimestamp?: number;

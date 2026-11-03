@@ -11,6 +11,11 @@ dist/
 node_modules/
 .vite/
 
+# Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+
 # Test binary, built with `go test -c`
 *.test
 

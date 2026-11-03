@@ -1,5 +1,6 @@
 import { getSettings, updateSettings, incrementBlockedCount } from '../storage/storage';
 import { generateDynamicRules } from '../rules/rule-builder';
+import { refreshRemoteBlocklist } from '../services/backend';
 
 const DEFAULT_RULESET_ID = 'ruleset_default';
 
@@ -33,7 +34,7 @@ async function syncRules(): Promise<void> {
 
   // Rebuild dynamic rules
   const dynamicRules = generateDynamicRules(
-    settings.customBlocklist,
+    [...settings.customBlocklist, ...settings.remoteBlocklist],
     settings.customAllowlist,
     chrome.runtime.getURL('blocked.html')
   );
@@ -50,12 +51,21 @@ async function syncRules(): Promise<void> {
 // Extension Lifecycle
 chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('[Vajra] Extension installed/updated:', details.reason);
+  await refreshRemoteBlocklist().catch((err) => console.warn('[Vajra] Keeping cached blocklist:', err));
   await syncRules();
 });
 
 chrome.runtime.onStartup.addListener(async () => {
   console.log('[Vajra] Browser startup - synchronizing rules');
+  await refreshRemoteBlocklist().catch((err) => console.warn('[Vajra] Keeping cached blocklist:', err));
   await syncRules();
+});
+
+chrome.alarms.create('vajra-blocklist-refresh', { periodInMinutes: 360 });
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'vajra-blocklist-refresh') {
+    refreshRemoteBlocklist().then(syncRules).catch((err) => console.error('[Vajra] Blocklist refresh failed:', err));
+  }
 });
 
 // React to storage changes

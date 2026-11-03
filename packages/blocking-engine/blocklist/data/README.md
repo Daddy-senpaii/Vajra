@@ -14,3 +14,8 @@ it with `scripts/update-adult-blocklist.sh`, review the resulting data diff, and
 retain this attribution. The source maintainers note that their list can be
 incomplete or contain false positives; domain-level blocking can also affect
 unrelated services hosted on a listed domain.
+
+`curated-domains.txt` contains additional candidate domains supplied for this
+project, including labeled site domains and source-listed alternate domains.
+These are loaded alongside the upstream snapshot and prioritized in extension
+rules. Pattern-generated guesses from the companion research data are excluded.

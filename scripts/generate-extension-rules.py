@@ -9,6 +9,7 @@ import urllib.parse
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CORE_LIST = ROOT / "packages/blocking-engine/blocklist/data/adult-domains.txt"
+CURATED_LIST = ROOT / "packages/blocking-engine/blocklist/data/curated-domains.txt"
 PRIORITY_LIST = ROOT / "apps/extension/data/default-priority-domains.txt"
 OUTPUT = ROOT / "apps/extension/public/rules.json"
 RULE_LIMIT = 30_000
@@ -23,7 +24,7 @@ def read_domains(path: pathlib.Path) -> list[str]:
 
 
 def main() -> int:
-    domains = set(read_domains(CORE_LIST))
+    domains = set(read_domains(CORE_LIST)) | set(read_domains(CURATED_LIST))
     priority = list(dict.fromkeys(read_domains(PRIORITY_LIST)))
     missing_priority = [domain for domain in priority if domain not in domains]
     if missing_priority:

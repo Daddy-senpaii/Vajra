@@ -4,7 +4,9 @@ Vajra is a cross-platform adult-content blocking application focused on helping 
 
 ## Current Status
 
-- **Phase 1: Core Blocking Engine** (offline engine with bundled adult-domain snapshot)
+- **Chrome and backend foundation:** offline domain engine, Manifest V3 extension,
+  curated-feed API, and optional CleanBrowsing profile sync are implemented.
+- **Not yet implemented:** Android client and first-party DNS resolver.
 
 ## Core engine
 
@@ -51,3 +53,33 @@ load `apps/extension/dist` as an unpacked extension in Chrome. After rebuilding,
 reload the extension from `chrome://extensions`. The packaged browser rules
 cover 30,000 domains; the standalone Go engine uses the full 426,211-domain
 snapshot.
+
+## Backend API and CleanBrowsing
+
+The Go API in `services/api` serves the curated domain delta and DNS resolver
+configuration to clients. CleanBrowsing's DNS resolver performs broad adult
+category filtering; its REST API is used only to add Vajra-curated domains to
+an account profile. The API key stays in the backend and is never sent to the
+extension or Android app.
+
+Run the service from its module directory:
+
+```sh
+cd services/api
+cp .env.example .env
+# Set VAJRA_ADMIN_TOKEN and the CleanBrowsing values in .env.
+set -a && . ./.env && set +a
+go run ./cmd/api
+```
+
+Endpoints are documented in [`services/api/README.md`](services/api/README.md).
+Set `VITE_VAJRA_API_URL` to the deployed HTTPS API origin when building the
+extension to enable its cached curated-list refresh. Without that setting, the
+extension continues to use the packaged block rules. The API's
+`GET /v1/config` endpoint is the configuration contract for the future Android
+client; this repository does not yet contain `apps/mobile`.
+
+The public CleanBrowsing Adult Filter resolver works without custom account
+configuration. Domains synced through the CleanBrowsing REST API apply only
+when devices use the corresponding custom resolver profile from the
+CleanBrowsing dashboard. See the service README before enabling profile sync.

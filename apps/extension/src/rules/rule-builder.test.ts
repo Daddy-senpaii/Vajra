@@ -7,6 +7,7 @@ import {
   PRIORITY_BLOCK,
   BASE_BLOCK_ID,
   BASE_ALLOW_ID,
+  MAX_DYNAMIC_BLOCK_RULES,
 } from './rule-builder';
 
 describe('rule-builder', () => {
@@ -44,5 +45,15 @@ describe('rule-builder', () => {
     expect(blockRule?.priority).toBe(PRIORITY_BLOCK);
     expect(allowRule?.priority).toBe(PRIORITY_ALLOW);
     expect(allowRule!.priority).toBeGreaterThan(blockRule!.priority!);
+  });
+
+  it('keeps combined dynamic rules within Chrome quota and preserves allow rules', () => {
+    const blocked = Array.from({ length: MAX_DYNAMIC_BLOCK_RULES }, (_, i) => `blocked-${i}.example`);
+    const allowed = Array.from({ length: 10 }, (_, i) => `allowed-${i}.example`);
+    const rules = generateDynamicRules(blocked, allowed);
+
+    expect(rules).toHaveLength(MAX_DYNAMIC_BLOCK_RULES);
+    expect(rules.filter((rule) => rule.priority === PRIORITY_ALLOW)).toHaveLength(10);
+    expect(rules.filter((rule) => rule.priority === PRIORITY_BLOCK)).toHaveLength(MAX_DYNAMIC_BLOCK_RULES - 10);
   });
 });

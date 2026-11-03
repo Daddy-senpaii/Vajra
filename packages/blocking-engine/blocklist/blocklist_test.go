@@ -3,6 +3,7 @@ package blocklist_test
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -39,6 +40,17 @@ func TestBlocklist_AddAndContains(t *testing.T) {
 	}
 	if bl.Size() != 1 {
 		t.Errorf("expected size 1 after duplicate, got %d", bl.Size())
+	}
+}
+
+func TestBlocklist_DomainsReturnsSortedSnapshot(t *testing.T) {
+	bl := blocklist.New()
+	_ = bl.Add("z.example")
+	_ = bl.Add("a.example")
+	got := bl.Domains()
+	want := []string{"a.example", "z.example"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("Domains() = %v, want %v", got, want)
 	}
 }
 
