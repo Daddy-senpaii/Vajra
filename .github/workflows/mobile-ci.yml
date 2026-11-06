@@ -6,9 +6,10 @@ on:
       - "mobile/**"
       - ".github/workflows/mobile-ci.yml"
   push:
-    branches: [main]
+    branches: ["**"]
     paths:
       - "mobile/**"
+      - ".nvmrc"
       - ".github/workflows/mobile-ci.yml"
 
 permissions:

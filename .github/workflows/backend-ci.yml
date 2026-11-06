@@ -7,7 +7,7 @@ on:
       - ".github/workflows/backend-ci.yml"
       - "go.work"
   push:
-    branches: [main]
+    branches: ["**"]
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
