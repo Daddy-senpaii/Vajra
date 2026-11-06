@@ -1,0 +1,30 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Go
+bin/
+*.test
+*.out
+
+# Node and React Native
+node_modules/
+mobile/node_modules/
+mobile/.expo/
+mobile/coverage/
+mobile/android/.gradle/
+mobile/android/**/build/
+mobile/android/local.properties
+mobile/android/.cxx/
+mobile/android/.kotlin/
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Android signing material
+*.jks
+*.keystore

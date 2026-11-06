@@ -1,0 +1,46 @@
+name: Mobile CI
+
+on:
+  pull_request:
+    paths:
+      - "mobile/**"
+      - ".github/workflows/mobile-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/mobile-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Install dependencies
+        working-directory: mobile
+        run: npm ci
+      - name: Type check
+        working-directory: mobile
+        run: npx tsc --noEmit
+      - name: Lint
+        working-directory: mobile
+        run: npm run lint
+      - name: Tests
+        working-directory: mobile
+        run: npm test -- --runInBand
+      - name: Android debug build
+        working-directory: mobile/android
+        run: ./gradlew assembleDebug
