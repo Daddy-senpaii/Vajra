@@ -1,11 +1,30 @@
+version: '3'
 services:
-  mongodb:
-    image: mongo:8.0
-    restart: unless-stopped
+  mongo:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:?Set MONGO_USERNAME in .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?Set MONGO_PASSWORD in .env}
+      MONGO_INITDB_DATABASE: vajra
     ports:
-      - "27017:27017"
-    volumes:
-      - vayra-mongodb:/data/db
+      - "127.0.0.1:27017:27017"
+    networks:
+      - mongo-db-network
 
-volumes:
-  vayra-mongodb:
+  mongo-express:
+    image: mongo-express:latest
+    depends_on:
+      - mongo
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME:?Set MONGO_USERNAME in .env}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD:?Set MONGO_PASSWORD in .env}
+      ME_CONFIG_MONGODB_SERVER: mongo
+    networks:
+      - mongo-db-network
+
+networks:
+  mongo-db-network:
+    name: mongo-db-network
+    driver: bridge

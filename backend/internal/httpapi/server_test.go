@@ -22,7 +22,7 @@ func TestHealth(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() { _ = client.Disconnect(ctx) }()
-	handler := New(client, "vayra", slog.New(slog.NewTextHandler(io.Discard, nil)))
+	handler := New(client, "vajra", slog.New(slog.NewTextHandler(io.Discard, nil)))
 	recorder := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	handler.ServeHTTP(recorder, request)

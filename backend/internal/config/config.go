@@ -12,7 +12,7 @@ func Load() Config {
 	return Config{
 		ListenAddr:    envOr("VAYRA_LISTEN_ADDR", ":8080"),
 		MongoURI:      envOr("VAYRA_MONGODB_URI", "mongodb://localhost:27017"),
-		MongoDatabase: envOr("VAYRA_MONGODB_DATABASE", "vayra"),
+		MongoDatabase: envOr("VAYRA_MONGODB_DATABASE", "vajra"),
 	}
 }
 

@@ -19,7 +19,7 @@ func TestLoadDefaults(t *testing.T) {
 	t.Setenv("VAYRA_MONGODB_DATABASE", "")
 
 	cfg := Load()
-	if cfg.ListenAddr != ":8080" || cfg.MongoURI != "mongodb://localhost:27017" || cfg.MongoDatabase != "vayra" {
+	if cfg.ListenAddr != ":8080" || cfg.MongoURI != "mongodb://localhost:27017" || cfg.MongoDatabase != "vajra" {
 		t.Fatalf("Load() = %+v, want defaults", cfg)
 	}
 }
